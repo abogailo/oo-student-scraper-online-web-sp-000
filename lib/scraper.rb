@@ -25,7 +25,7 @@ class Scraper
     doc = Nokogiri::HTML(open(profile_url))
     attribute_hash = {}
 
-    doc.css(".social-icon-container").each do |link|
+    doc.css(".social-icon-container a").each do |link|
       normalized_link = link.attribute("href").text
 
       attribute_hash[:twitter] = normalized_link if normalized_link.include?("twitter")
