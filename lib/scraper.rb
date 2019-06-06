@@ -41,5 +41,5 @@ class Scraper
     student_details[:bio] = doc.css("div.details-container.description-holder p").text
 
      student_details
-
+   end
 end
