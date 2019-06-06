@@ -11,13 +11,13 @@ class Scraper
 
     doc.css("div.roster-cards-container").each do |card|
       card.css(".student-card a").each do |student|
-        student_hash <<{
-        name: = student.css(".student-name").text,
-        location: = student.css(".student-location").text,
-        profile_url: = "#{student.attr("href")}"
+        student_hash << {
+        name: student.css(".student-name").text,
+        location:  student.css(".student-location").text,
+        profile_url:  "#{student.attr("href")}"
       }
-      end
     end
+  end
     student_hash
   end
 
