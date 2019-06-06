@@ -43,5 +43,5 @@ class Scraper
 
      student_details
 
-   end	  end
+   end	  
 end
