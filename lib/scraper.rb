@@ -7,37 +7,35 @@ class Scraper
   def self.scrape_index_page(index_url)
     doc = Nokogiri::HTML(open(index_url))
 
-     scraped_students = []
+    student_hash = []
 
-     doc.css("div.student-card").each do |student|
-      scraped_students << {
-        name: student.css("h4.student-name").text,
-        location: student.css("p.student-location").text, profile_url: "http://students.learn.co/#{student.css("a").attribute("href").value}"}
+    doc.css("div.roster-cards-container").each do |card|
+      card.css(".student-card a").each do |student|
+        student_hash << {
+        name: student.css(".student-name").text,
+        location: student.css(".student-location").text,
+        profile_url: "#{student.attr("href")}"
+        }
+      end
     end
-    scraped_students
+    student_hash
   end
 
   def self.scrape_profile_page(profile_url)
-    doc = Nokogiri::HTML(open(profile_url))
+    students_hash = {}
 
-     student_details = {}
 
-     doc.css("div.social-icon-container").each do |social_media|
-      if social_media.include?("twitter")
-        student_details[:twitter] = doc.css("div.social-icon-containter")[0]["href"]
-      elsif social_media.include?("linkedin")
-        student_details[:linkedin] = doc.css("div.social-icon-containter")[0]["href"]
-      elsif social_media.include?("github")
-        student_details[:github] = doc.css("div.social-icon-containter")[0]["href"]
-      elsif social_media.include?(".com")
-        student_details[:blog]= doc.css("div.social-icon-container a")[0]["href"]
-      end
+     html = Nokogiri::HTML(open(profile_url))
+    html.css("div.social-icon-controler a").each do |student|
+        url = student.attribute("href")
+        students_hash[:twitter_url] = url if url.include?("twitter")
+        students_hash[:linkedin_url] = url if url.include?("linkedin")
+        students_hash[:github_url] = url if url.include?("github")
+        students_hash[:blog_url] = url if student.css("img").attribute("src").text.include?("rss")
     end
+        students_hash[:profile_quote] = html.css("div.profile-quote").text
+        students_hash[:bio] = html.css("div.bio-content p").text
+    students_hash
+  end
 
-     student_details[:profile_quote] = doc.css("div.vitals-text-container.profile-quote").text
-    student_details[:bio] = doc.css("div.details-container.description-holder p").text
-
-     student_details
-
-   end
 end
